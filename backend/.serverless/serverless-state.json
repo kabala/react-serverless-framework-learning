@@ -174,7 +174,7 @@
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/backend/prod/1628203396862-2021-08-05T22:43:16.862Z/backend.zip"
+                "S3Key": "serverless/backend/prod/1628540616661-2021-08-09T20:23:36.661Z/backend.zip"
               },
               "Handler": "handler.hello",
               "Runtime": "nodejs14.x",
@@ -192,20 +192,122 @@
               "HelloLogGroup"
             ]
           },
-          "HelloLambdaVersionm2R8EpL9D1VyMVcn66xq8vuGxAvCCiocEfyN756skRI": {
+          "HelloLambdaVersionFqul93eAhq1fNEoZfraldnHPzM0vpO60ND27A3bBq10": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
                 "Ref": "HelloLambdaFunction"
               },
-              "CodeSha256": "W5zyfb08q5WPNnDgK/ZFDCHMGJLqBvrMICFxxmU0TjI="
+              "CodeSha256": "8LfE0EAON0XHVcxWAE9r/TZCSWtGgdmDXm0YCPKnRlo="
             }
           },
-          "exampleBucket": {
-            "Type": "AWS::S3::Bucket",
+          "CognitoUserPool": {
+            "Type": "AWS::Cognito::UserPool",
             "Properties": {
-              "BucketName": "my-example-bucket-852021"
+              "UserPoolName": "prod-taxo-user-pool",
+              "AliasAttributes": [
+                "preferred_username"
+              ],
+              "AutoVerifiedAttributes": [
+                "email"
+              ]
+            }
+          },
+          "CognitoIdentityPool": {
+            "Type": "AWS::Cognito::IdentityPool",
+            "Properties": {
+              "IdentityPoolName": "prod-taxo-identity-pool",
+              "AllowUnauthenticatedIdentities": false,
+              "CognitoIdentityProviders": [
+                {
+                  "ClientId": {
+                    "Ref": "CognitoUserPoolClient"
+                  },
+                  "ProviderName": {
+                    "Fn::GetAtt": [
+                      "CognitoUserPool",
+                      "ProviderName"
+                    ]
+                  }
+                }
+              ]
+            }
+          },
+          "CognitoUserPoolClient": {
+            "Type": "AWS::Cognito::UserPoolClient",
+            "Properties": {
+              "ClientName": "prod-taxo-user-pool-client",
+              "UserPoolId": {
+                "Ref": "CognitoUserPool"
+              },
+              "ExplicitAuthFlows": [
+                "ADMIN_NO_SRP_AUTH"
+              ],
+              "GenerateSecret": false
+            }
+          },
+          "CognitoIdentityPoolRoles": {
+            "Type": "AWS::Cognito::IdentityPoolRoleAttachment",
+            "Properties": {
+              "IdentityPoolId": {
+                "Ref": "CognitoIdentityPool"
+              },
+              "Roles": {
+                "authenticated": {
+                  "Fn::GetAtt": [
+                    "CognitoAuthRole",
+                    "Arn"
+                  ]
+                }
+              }
+            }
+          },
+          "CognitoAuthRole": {
+            "Type": "AWS::IAM::Role",
+            "Properties": {
+              "Path": "/",
+              "AssumeRolePolicyDocument": {
+                "Version": "2012-10-17",
+                "Statement": [
+                  {
+                    "Effect": "Allow",
+                    "Principal": {
+                      "Federated": "cognito-identity.amazonaws.com"
+                    },
+                    "Action": [
+                      "sts:AssumeRoleWithWebIdentity"
+                    ],
+                    "Condition": {
+                      "StringEquals": {
+                        "cognito-identity.amazonaws.com:aud": {
+                          "Ref": "CognitoIdentityPool"
+                        }
+                      },
+                      "ForAnyValue:StringLike": {
+                        "cognito-identity.amazonaws.com:amr": "authenticated"
+                      }
+                    }
+                  }
+                ]
+              },
+              "Policies": [
+                {
+                  "PolicyName": "CognitoAuthorizedPolicy",
+                  "PolicyDocument": {
+                    "Version": "2012-10-17",
+                    "Statement": [
+                      {
+                        "Effect": "Allow",
+                        "Action": [
+                          "cognito-identity:*"
+                        ],
+                        "Resource": "*"
+                      }
+                    ]
+                  }
+                }
+              ]
             }
           }
         },
@@ -221,15 +323,25 @@
           "HelloLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "HelloLambdaVersionm2R8EpL9D1VyMVcn66xq8vuGxAvCCiocEfyN756skRI"
+              "Ref": "HelloLambdaVersionFqul93eAhq1fNEoZfraldnHPzM0vpO60ND27A3bBq10"
             },
             "Export": {
               "Name": "sls-backend-prod-HelloLambdaFunctionQualifiedArn"
             }
           },
-          "exampleBucketUrl": {
+          "IdentityPoolId": {
             "Value": {
-              "Ref": "exampleBucket"
+              "Ref": "CognitoIdentityPool"
+            }
+          },
+          "UserPoolId": {
+            "Value": {
+              "Ref": "CognitoUserPool"
+            }
+          },
+          "UserPoolClientId": {
+            "Value": {
+              "Ref": "CognitoUserPoolClient"
             }
           }
         }
@@ -319,6 +431,13 @@
       "vpc": {}
     },
     "custom": {
+      "resourceNames": {
+        "uniqueWord": "taxo",
+        "uniqueStage": "prod-taxo",
+        "userPool": "prod-taxo-user-pool",
+        "identityPool": "prod-taxo-identity-pool",
+        "poolClient": "prod-taxo-user-pool-client"
+      },
       "output": {
         "handler": "scripts/config.handler"
       },
@@ -354,22 +473,134 @@
         "timeout": 6,
         "runtime": "nodejs14.x",
         "vpc": {},
-        "versionLogicalId": "HelloLambdaVersionm2R8EpL9D1VyMVcn66xq8vuGxAvCCiocEfyN756skRI"
+        "versionLogicalId": "HelloLambdaVersionFqul93eAhq1fNEoZfraldnHPzM0vpO60ND27A3bBq10"
       }
     },
     "resources": {
       "Resources": {
-        "exampleBucket": {
-          "Type": "AWS::S3::Bucket",
+        "CognitoUserPool": {
+          "Type": "AWS::Cognito::UserPool",
           "Properties": {
-            "BucketName": "my-example-bucket-852021"
+            "UserPoolName": "prod-taxo-user-pool",
+            "AliasAttributes": [
+              "preferred_username"
+            ],
+            "AutoVerifiedAttributes": [
+              "email"
+            ]
+          }
+        },
+        "CognitoIdentityPool": {
+          "Type": "AWS::Cognito::IdentityPool",
+          "Properties": {
+            "IdentityPoolName": "prod-taxo-identity-pool",
+            "AllowUnauthenticatedIdentities": false,
+            "CognitoIdentityProviders": [
+              {
+                "ClientId": {
+                  "Ref": "CognitoUserPoolClient"
+                },
+                "ProviderName": {
+                  "Fn::GetAtt": [
+                    "CognitoUserPool",
+                    "ProviderName"
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        "CognitoUserPoolClient": {
+          "Type": "AWS::Cognito::UserPoolClient",
+          "Properties": {
+            "ClientName": "prod-taxo-user-pool-client",
+            "UserPoolId": {
+              "Ref": "CognitoUserPool"
+            },
+            "ExplicitAuthFlows": [
+              "ADMIN_NO_SRP_AUTH"
+            ],
+            "GenerateSecret": false
+          }
+        },
+        "CognitoIdentityPoolRoles": {
+          "Type": "AWS::Cognito::IdentityPoolRoleAttachment",
+          "Properties": {
+            "IdentityPoolId": {
+              "Ref": "CognitoIdentityPool"
+            },
+            "Roles": {
+              "authenticated": {
+                "Fn::GetAtt": [
+                  "CognitoAuthRole",
+                  "Arn"
+                ]
+              }
+            }
+          }
+        },
+        "CognitoAuthRole": {
+          "Type": "AWS::IAM::Role",
+          "Properties": {
+            "Path": "/",
+            "AssumeRolePolicyDocument": {
+              "Version": "2012-10-17",
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Principal": {
+                    "Federated": "cognito-identity.amazonaws.com"
+                  },
+                  "Action": [
+                    "sts:AssumeRoleWithWebIdentity"
+                  ],
+                  "Condition": {
+                    "StringEquals": {
+                      "cognito-identity.amazonaws.com:aud": {
+                        "Ref": "CognitoIdentityPool"
+                      }
+                    },
+                    "ForAnyValue:StringLike": {
+                      "cognito-identity.amazonaws.com:amr": "authenticated"
+                    }
+                  }
+                }
+              ]
+            },
+            "Policies": [
+              {
+                "PolicyName": "CognitoAuthorizedPolicy",
+                "PolicyDocument": {
+                  "Version": "2012-10-17",
+                  "Statement": [
+                    {
+                      "Effect": "Allow",
+                      "Action": [
+                        "cognito-identity:*"
+                      ],
+                      "Resource": "*"
+                    }
+                  ]
+                }
+              }
+            ]
           }
         }
       },
       "Outputs": {
-        "exampleBucketUrl": {
+        "IdentityPoolId": {
           "Value": {
-            "Ref": "exampleBucket"
+            "Ref": "CognitoIdentityPool"
+          }
+        },
+        "UserPoolId": {
+          "Value": {
+            "Ref": "CognitoUserPool"
+          }
+        },
+        "UserPoolClientId": {
+          "Value": {
+            "Ref": "CognitoUserPoolClient"
           }
         }
       }
@@ -401,7 +632,7 @@
     "isDashboardMonitoringPreconfigured": false
   },
   "package": {
-    "artifactDirectoryName": "serverless/backend/prod/1628203396862-2021-08-05T22:43:16.862Z",
+    "artifactDirectoryName": "serverless/backend/prod/1628540616661-2021-08-09T20:23:36.661Z",
     "artifact": ""
   }
 }

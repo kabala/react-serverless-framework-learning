@@ -26,6 +26,12 @@ plugins:
   - serverless-stack-output
 
 custom:
+  resourceNames:
+    uniqueWord: taxo
+    uniqueStage: ${self:provider.stage}-${self:custom.resourceNames.uniqueWord}
+    userPool: ${self:custom.resourceNames.uniqueStage}-user-pool
+    identityPool: ${self:custom.resourceNames.uniqueStage}-identity-pool
+    poolClient: ${self:custom.resourceNames.uniqueStage}-user-pool-client
   output:
     handler: scripts/config.handler
 
@@ -111,12 +117,4 @@ functions:
 
 # you can add CloudFormation resource templates here
 resources:
-  Resources:
-    exampleBucket:
-      Type: AWS::S3::Bucket
-      Properties:
-        BucketName: my-example-bucket-852021
-  Outputs:
-     exampleBucketUrl:
-        Value:
-          Ref: exampleBucket
+  - ${file(resources/security.yml)}
