@@ -5,15 +5,16 @@
  * @license Attribution-NonCommercial-NoDerivatives 4.0 International
  */
 /* external imports */
-import AWS from 'aws-sdk';
+import AWS, {CognitoIdentityCredentials} from 'aws-sdk';
 import * as AmazonCognitoIdentity from 'amazon-cognito-identity-js';
+
 /* local imports */
-const {
+import {
     AWS_REGION,
     USER_POOL_ID,
     IDENTITY_POOL_ID,
     USER_POOL_CLIENT_ID
-} from './environment';
+} from "./environment";
 
 /* the user pool for registration and login operations */
 const userPool = new AmazonCognitoIdentity.CognitoUserPool({
@@ -30,7 +31,7 @@ export default class Authentication {
      * @param  {string} username
      * @returns  {CognitoUser}} Instance of cognito user.
      */
-    getCognitoUser = (username) => {
+    getCognitoUser = (username: string) => {
         /* otherwise return current user in session */
         return new AmazonCognitoIdentity.CognitoUser({
             Username: username,
@@ -42,7 +43,7 @@ export default class Authentication {
      * @param  {string} token
      * @returns {CognitoIdentityCredentials} Cognito credentials object.
      */
-    getAWSCredentials = async (token)=>{
+    getAWSCredentials = async (token: string)=>{
         /* set aws region */
         AWS.config.region = AWS_REGION;
         /* build the login url */
@@ -65,8 +66,8 @@ export default class Authentication {
      * Get cached user if present.
      * @returns {Promise} promise resolve the credentials of cached user.
      */
-    getCachedUser = () =>{
-        return new Promise((resolve, reject) => {
+    getCachedUser = () => {
+        return new Promise<void | CognitoIdentityCredentials>((resolve, reject) => {
             let user = userPool.getCurrentUser();
             if (user != null) {
                 user.getSession(async (err, session)=> {
