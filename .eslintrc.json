@@ -4,6 +4,15 @@
   "parserOptions": {
     "project": ["tsconfig.json"]
   },
+  "settings": {
+    "import/resolver": {
+      "node": {
+        "paths": [
+          "src"
+        ]
+      }
+    }
+  },
   "rules": {
     "prettier/prettier": [
       "error"
