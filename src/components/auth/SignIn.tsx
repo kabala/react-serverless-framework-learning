@@ -9,19 +9,19 @@ import React, { useState } from 'react';
 import { Form, Input, Button } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 /* local imports */
-import { signIn, setUsername } from 'store/actions/authActions';
-import { switchAuthenticationForm } from 'store/actions/global';
+// import { setUsername } from 'store/actions/authActions';
+import switchAuthenticationForm from 'store/actions/global';
 import { useAppDispatch } from 'store/hooks';
 import {
   NAVIGATION_AUTHENTICATION_SIGN_UP,
   NAVIGATION_AUTHENTICATION_FORGOT_PASSWORD,
-  NAVIGATION_AUTHENTICATION_CONFIRM_ACCOUNT,
+  // NAVIGATION_AUTHENTICATION_CONFIRM_ACCOUNT,
 } from 'lib/types';
 
-interface SignUpFormFields {
-  userName: string;
-  password: string;
-}
+// interface SignUpFormFields {
+//   userName: string;
+//   password: string;
+// }
 
 export default function SignIn() {
   const [form] = Form.useForm();
@@ -33,26 +33,27 @@ export default function SignIn() {
    * @param  {string} error
    * @param  {Object} values
    */
-  function evaluateSignInResult(error: string, values: SignUpFormFields) {
-    /* determine the error by evaluating true conditions. */
-    switch (true) {
-      /* the account is not yet confirmed, switch to confirm account form */
-      case error.includes('not confirmed'):
-        dispatch(setUsername(values.userName));
-        dispatch(switchAuthenticationForm(NAVIGATION_AUTHENTICATION_CONFIRM_ACCOUNT));
-        break;
-      /* there was another error, display error message in password field */
+  // function evaluateSignInResult(error: string, values: SignUpFormFields) {
+  //   /* determine the error by evaluating true conditions. */
+  //   switch (true) {
+  //     /* the account is not yet confirmed, switch to confirm account form */
+  //     case error.includes('not confirmed'):
+  //       dispatch(setUsername(values.userName));
+  //       dispatch(switchAuthenticationForm(NAVIGATION_AUTHENTICATION_CONFIRM_ACCOUNT));
+  //       break;
+  //     /* there was another error, display error message in password field */
+  //
+  //     default:
+  //       form.setFields([
+  //         {
+  //           name: 'password',
+  //           value: values.password,
+  //           errors: [error],
+  //         },
+  //       ]);
+  //   }
+  // }
 
-      default:
-        form.setFields([
-          {
-            name: 'password',
-            value: values.password,
-            errors: [error],
-          },
-        ]);
-    }
-  }
   /**
    * Handles the sign in submission
    * @param  {Event} e

@@ -6,7 +6,6 @@
  * @license Attribution-NonCommercial-NoDerivatives 4.0 International
  */
 
-
 /* exporting environment variables */
 /* endpoint for the serverless functions */
 export const API_ENDPOINT: string = process.env.REACT_APP_ENDPOINT!;

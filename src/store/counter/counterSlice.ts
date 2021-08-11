@@ -1,24 +1,27 @@
-import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { RootState } from '../store';
+import {
+  // createAsyncThunk,
+  createSlice,
+  // PayloadAction
+} from '@reduxjs/toolkit';
 
 export interface CounterState {
-    value: number
+  value: number;
 }
 
 const initialState: CounterState = {
-    value: 0
-}
+  value: 0,
+};
 
 export const counterSlice = createSlice({
-    name: "counter",
-    initialState,
-    reducers: {
-        increment: state => {
-            state.value += 1
-        }
-    }
+  name: 'counter',
+  initialState,
+  reducers: {
+    increment: (state) => {
+      state.value += 1;
+    },
+  },
 });
 
-export const {increment} = counterSlice.actions;
+export const { increment } = counterSlice.actions;
 
-export default  counterSlice.reducer;
+export default counterSlice.reducer;
