@@ -116,7 +116,7 @@ export default class Authentication {
    * @param {string[]} attributes
    * @returns {Promise} promise resolving the username.
    */
-  signUp = (username: string, password: string, attributes: array) =>
+  signUp = (username: string, password: string, attributes: []) =>
     new Promise((resolve, reject) => {
       /* convert all attributes to cognito attributes */
       const cognitoAttributes = attributes.map(
@@ -235,7 +235,11 @@ export default class Authentication {
    * @param {String} verificationCode
    * @param {String} newPassword
    */
-  confirmPassword = (username: string, verificationCode: string, newPassword: string) => {
+  confirmPassword(
+    username: string,
+    verificationCode: string,
+    newPassword: string
+  ): Promise<string> {
     const cognitoUser = this.getCognitoUser(username);
     return new Promise((resolve, reject) => {
       cognitoUser.confirmPassword(verificationCode, newPassword, {
@@ -245,5 +249,5 @@ export default class Authentication {
         onFailure: reject,
       });
     });
-  };
+  }
 }

@@ -14,10 +14,12 @@ import {
   AUTHENTICATION_FORGOT_PASSWORD,
   AUTHENTICATION_CONFIRM_PASSWORD,
   AUTHENTICATION_CONFIRM_REGISTRATION,
+  // AUTHENTICATION_ERROR,
   NAVIGATION_AUTHENTICATION_SWITCH_FORM,
   NAVIGATION_AUTHENTICATION_CONFIRM_ACCOUNT,
 } from 'lib/types';
 import Authentication from 'lib/authentication';
+import { AppDispatch } from '../store';
 /* Create constant authentication instance */
 const auth = new Authentication();
 /**
@@ -29,12 +31,12 @@ const auth = new Authentication();
  * @param {Any[]} authParams A list of arguments for the authentication function.
  * @returns {(string|undefined)} Returns error message if fails on async function call.
  */
-const authHelper = async (
-  dispatch,
+async function authHelper(
+  dispatch: any,
   actionType: string,
-  authFunc,
-  authParams
-): Promise<string | void> => {
+  authFunc: any,
+  authParams: any
+): Promise<string | undefined> {
   try {
     const result = await authFunc(...authParams);
     dispatch({
@@ -44,7 +46,10 @@ const authHelper = async (
   } catch (e) {
     return e.message;
   }
-};
+
+  return undefined;
+}
+
 /**
  * Signs up and dispatch sign up action to the authentication reducer.
  * @async
@@ -53,27 +58,29 @@ const authHelper = async (
  * @param {string} password
  * @returns {(string|undefined)} Returns error message if fails on async function call.
  */
-export const signUp = (username, email, password) => async (dispatch) => {
-  let attributes = [
-    {
-      Name: 'email',
-      Value: email,
-    },
-  ];
-  let error = await authHelper(dispatch, AUTHENTICATION_SIGN_UP, auth.signUp, [
-    username,
-    password,
-    attributes,
-  ]);
-  /* if sign up succeed, dispatch other actions */
-  if (!error) {
-    dispatch({
-      type: NAVIGATION_AUTHENTICATION_SWITCH_FORM,
-      payload: NAVIGATION_AUTHENTICATION_CONFIRM_ACCOUNT,
-    });
-  }
-  return error;
-};
+export const signUp =
+  (username: string, email: string, password: string) => async (dispatch: AppDispatch) => {
+    const attributes = [
+      {
+        Name: 'email',
+        Value: email,
+      },
+    ];
+    const error = await authHelper(dispatch, AUTHENTICATION_SIGN_UP, auth.signUp, [
+      username,
+      password,
+      attributes,
+    ]);
+    /* if sign up succeed, dispatch other actions */
+    if (!error) {
+      dispatch({
+        type: NAVIGATION_AUTHENTICATION_SWITCH_FORM,
+        payload: NAVIGATION_AUTHENTICATION_CONFIRM_ACCOUNT,
+      });
+    }
+    return error;
+  };
+
 /**
  * Sign in and dispatch sign in action to the authentication reducer.
  * @async
@@ -81,7 +88,7 @@ export const signUp = (username, email, password) => async (dispatch) => {
  * @param {string} password
  * @returns {(string|undefined)} Returns error message if fails on async function call.
  */
-export const signIn = (username, password) => async (dispatch) => {
+export const signIn = (username: string, password: string) => async (dispatch: AppDispatch) => {
   const authData = await authHelper(dispatch, AUTHENTICATION_SIGN_IN, auth.signIn.bind(auth), [
     username,
     password,
@@ -89,6 +96,7 @@ export const signIn = (username, password) => async (dispatch) => {
 
   return authData;
 };
+
 /**
  * Confirm registration and dispatch registration confirmation action to the authentication reducer.
  * @async
@@ -96,23 +104,32 @@ export const signIn = (username, password) => async (dispatch) => {
  * @param {string} code
  * @returns {(string|undefined)} Returns error message if fails on async function call.
  */
-export const confirmRegistration = (username, code) => async (dispatch) => {
-  return await authHelper(dispatch, AUTHENTICATION_CONFIRM_REGISTRATION, auth.confirmRegistration, [
-    username,
-    code,
-  ]);
-};
+export const confirmRegistration =
+  (username: string, code: any) => async (dispatch: AppDispatch) => {
+    const authData = await authHelper(
+      dispatch,
+      AUTHENTICATION_CONFIRM_REGISTRATION,
+      auth.confirmRegistration,
+      [username, code]
+    );
+
+    return authData;
+  };
+
 /**
  * Dispatch resend email confirmation action to the authentication reducer.
  * @async
  * @param {string} username
  * @returns {(string|undefined)} Returns error message if fails on async function call.
  */
-export const resendConfirmation = (username) => async (dispatch) => {
-  return await authHelper(dispatch, AUTHENTICATION_RESEND_CODE, auth.resendConfirmation, [
+export const resendConfirmation = (username: string) => async (dispatch: AppDispatch) => {
+  const authData = await authHelper(dispatch, AUTHENTICATION_RESEND_CODE, auth.resendConfirmation, [
     username,
   ]);
+
+  return authData;
 };
+
 /**
  * Dispatch the change password action to the authentication reducer.
  * @async
@@ -121,24 +138,32 @@ export const resendConfirmation = (username) => async (dispatch) => {
  * @param {string} newPassword
  * @returns {(string|undefined)} Returns error message if fails on async function call.
  */
-export const changePassword = (username, oldPassword, newPassword) => async (dispatch) => {
-  return await authHelper(dispatch, AUTHENTICATION_CHANGE_PASSWORD, auth.changePassword, [
-    username,
-    oldPassword,
-    newPassword,
-  ]);
-};
+export const changePassword =
+  (username: string, oldPassword: string, newPassword: string) => async (dispatch: AppDispatch) => {
+    const authData = await authHelper(
+      dispatch,
+      AUTHENTICATION_CHANGE_PASSWORD,
+      auth.changePassword,
+      [username, oldPassword, newPassword]
+    );
+
+    return authData;
+  };
+
 /**
  * Dispatch the forgot password action to the authentication reducer.
  * @async
  * @param {string} username
  * @returns {(string|undefined)} Returns error message if fails on async function call.
  */
-export const forgotPassword = (username) => async (dispatch) => {
-  return await authHelper(dispatch, AUTHENTICATION_FORGOT_PASSWORD, auth.forgotPassword, [
+export const forgotPassword = (username: string) => async (dispatch: AppDispatch) => {
+  const authData = await authHelper(dispatch, AUTHENTICATION_FORGOT_PASSWORD, auth.forgotPassword, [
     username,
   ]);
+
+  return authData;
 };
+
 /**
  * Dispatch the confirm password action to the authentication reducer.
  * @async
@@ -147,26 +172,35 @@ export const forgotPassword = (username) => async (dispatch) => {
  * @param {string} newPassword
  * @returns {(string|undefined)} Returns error message if fails on async function call.
  */
-export const confirmPassword = (username, verificationCode, newPassword) => async (dispatch) => {
-  return await authHelper(dispatch, AUTHENTICATION_CONFIRM_PASSWORD, auth.confirmPassword, [
-    username,
-    verificationCode,
-    newPassword,
-  ]);
-};
+export const confirmPassword =
+  (username: string, verificationCode: string, newPassword: string) =>
+  async (dispatch: AppDispatch) => {
+    const authData = await authHelper(
+      dispatch,
+      AUTHENTICATION_CONFIRM_PASSWORD,
+      auth.confirmPassword,
+      [username, verificationCode, newPassword]
+    );
+
+    return authData;
+  };
+
 /**
  * Dispatch the sign out action to the authentication reducer.
  * @async
  * @returns {(string|undefined)} Returns error message if fails on async function call.
  */
-export const signOut = () => async (dispatch) => {
-  return await authHelper(dispatch, AUTHENTICATION_SIGN_OUT, auth.signOut, []);
+export const signOut = () => async (dispatch: AppDispatch) => {
+  const authData = await authHelper(dispatch, AUTHENTICATION_SIGN_OUT, auth.signOut, []);
+
+  return authData;
 };
+
 /**
  * Dispatch the set-username action to the authentication reducer.
  * @param {string} username
  */
-export const setUsername = (username) => (dispatch) => {
+export const setUsername = (username: string) => (dispatch: AppDispatch) => {
   dispatch({
     type: AUTHENTICATION_SET_USERNAME,
     payload: username,
