@@ -4,6 +4,7 @@
  * @author Carlos Santín
  * @license Attribution-NonCommercial-NoDerivatives 4.0 International
  */
+
 /* external imports */
 import React, { useState } from 'react';
 import { Form, Input, Button } from 'antd';
@@ -29,16 +30,12 @@ export default function SignIn() {
 
   /**
    * Handles the sign in submission
-   * @param  {Event} e
+   * @param  {SignUpFormFields} form fields
    */
   async function handleSubmit({ userName, password }: SignUpFormFields): Promise<void> {
-    /* cancel the form submission, we want to login manually instead */
-    console.log(userName, password);
-    // e.preventDefault();
-    /* switch on loading spin on parent component */
     setIsLoading(true);
     try {
-      await signIn(userName, password);
+      await dispatch(signIn(userName, password));
     } catch (error) {
       if (error.includes('not confirmed')) {
         dispatch(setUsername(userName));

@@ -47,6 +47,7 @@ const initialState: AuthState = {
  * @param {Any[]} authParams A list of arguments for the authentication function.
  * @returns {(string|undefined)} Returns error message if fails on async function call.
  */
+
 async function authHelper(
   dispatch: any,
   actionType: string,
@@ -55,6 +56,9 @@ async function authHelper(
 ): Promise<string | undefined> {
   try {
     const result = await authFunc(...authParams);
+
+    console.log({ result });
+
     dispatch({
       type: actionType,
       payload: result,
