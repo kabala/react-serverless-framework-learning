@@ -11,7 +11,7 @@ import { Form, Input, Button } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 /* local imports */
 import { signIn, setUsername } from 'store/slices/authSlice';
-import switchAuthenticationForm from 'store/actions/global';
+import { switchAuthenticationForm } from 'store/slices/globalSlice';
 import { useAppDispatch } from 'store/hooks';
 import {
   NAVIGATION_AUTHENTICATION_SIGN_UP,
@@ -19,7 +19,7 @@ import {
   NAVIGATION_AUTHENTICATION_CONFIRM_ACCOUNT,
 } from 'lib/types';
 
-interface SignUpFormFields {
+interface SignInFormFields {
   userName: string;
   password: string;
 }
@@ -30,9 +30,9 @@ export default function SignIn() {
 
   /**
    * Handles the sign in submission
-   * @param  {SignUpFormFields} form fields
+   * @param  {SignInFormFields} form fields
    */
-  async function handleSubmit({ userName, password }: SignUpFormFields): Promise<void> {
+  async function handleSubmit({ userName, password }: SignInFormFields): Promise<void> {
     setIsLoading(true);
     try {
       await dispatch(signIn(userName, password));
@@ -46,12 +46,7 @@ export default function SignIn() {
     }
     setIsLoading(false);
   }
-  /**
-   * Renders the sign in form component.
-   * @returns {React.Component}
-   */
-  /* get Ant design form field decorator function for this form */
-  // const { getFieldDecorator } = this.props.form;
+
   return (
     <Form onFinish={handleSubmit}>
       <Form.Item

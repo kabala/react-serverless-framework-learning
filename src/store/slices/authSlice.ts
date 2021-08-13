@@ -1,7 +1,7 @@
 /**
  * This script exports the authentication actions.
  *
- * @author Victor Santos Uceta
+ * @author Carlos Santín
  * @license Attribution-NonCommercial-NoDerivatives 4.0 International
  */
 import { createSlice, Slice } from '@reduxjs/toolkit';
