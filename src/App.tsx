@@ -1,7 +1,8 @@
 import React from 'react';
 import 'antd/dist/antd.css';
 
-import SignIn from './components/auth/SignIn';
+// import SignIn from 'components/auth/SignIn';
+import SignIn from 'components/auth/SignIn';
 
 function App() {
   return (

@@ -1,12 +1,37 @@
-import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
+import { configureStore, getDefaultMiddleware, ThunkAction, Action } from '@reduxjs/toolkit';
+// import { useSelector } from 'react-redux';
+import {
+  persistCombineReducers,
+  FLUSH,
+  REHYDRATE,
+  PAUSE,
+  PERSIST,
+  PURGE,
+  REGISTER,
+} from 'reduxjs-toolkit-persist';
+import storage from 'reduxjs-toolkit-persist/lib/storage';
+
 import authReducer from './slices/authSlice';
 import globalSlice from './slices/globalSlice';
 
-export const store = configureStore({
-  reducer: {
-    global: globalSlice,
-    auth: authReducer,
+const persistedReducer = persistCombineReducers(
+  {
+    key: 'auth',
+    storage,
+    whitelist: ['key'],
+    debug: true,
   },
+  { global: globalSlice, auth: authReducer }
+);
+
+export const store = configureStore({
+  reducer: persistedReducer,
+  middleware: getDefaultMiddleware({
+    serializableCheck: {
+      /* ignore persistance actions */
+      ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+    },
+  }),
 });
 
 // Infer the `RootState` and `AppDispatch` types from the store itself

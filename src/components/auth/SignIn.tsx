@@ -34,6 +34,8 @@ export default function SignIn() {
    */
   async function handleSubmit({ userName, password }: SignInFormFields): Promise<void> {
     setIsLoading(true);
+    console.log('hi');
+    dispatch(setUsername(userName));
     try {
       await dispatch(signIn(userName, password));
     } catch (error) {
