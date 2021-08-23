@@ -85,7 +85,7 @@ export default function SignUp() {
     setIsLoading(true);
 
     try {
-      await dispatch(signUp(userName, email, password));
+      await dispatch(signUp({ userName, email, password }));
     } catch (error) {
       console.log(error);
     }

@@ -10,13 +10,13 @@ import React, { useState } from 'react';
 import { Form, Input, Button } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 /* local imports */
-import { signIn, setUsername } from 'store/slices/authSlice';
+import { setUsername } from 'store/slices/authSlice';
 import { switchAuthenticationForm } from 'store/slices/globalSlice';
 import { useAppDispatch } from 'store/hooks';
 import {
   NAVIGATION_AUTHENTICATION_SIGN_UP,
   NAVIGATION_AUTHENTICATION_FORGOT_PASSWORD,
-  NAVIGATION_AUTHENTICATION_CONFIRM_ACCOUNT,
+  // NAVIGATION_AUTHENTICATION_CONFIRM_ACCOUNT,
 } from 'lib/types';
 
 interface SignInFormFields {
@@ -32,20 +32,20 @@ export default function SignIn() {
    * Handles the sign in submission
    * @param  {SignInFormFields} form fields
    */
-  async function handleSubmit({ userName, password }: SignInFormFields): Promise<void> {
+  async function handleSubmit({ userName }: SignInFormFields): Promise<void> {
     setIsLoading(true);
     console.log('hi');
     dispatch(setUsername(userName));
-    try {
-      await dispatch(signIn(userName, password));
-    } catch (error) {
-      if (error.includes('not confirmed')) {
-        dispatch(setUsername(userName));
-        dispatch(switchAuthenticationForm(NAVIGATION_AUTHENTICATION_CONFIRM_ACCOUNT));
-      }
-
-      console.log(error);
-    }
+    // try {
+    //   await dispatch(signIn(userName, password));
+    // } catch (error) {
+    //   if (error.includes('not confirmed')) {
+    //     dispatch(setUsername(userName));
+    //     dispatch(switchAuthenticationForm(NAVIGATION_AUTHENTICATION_CONFIRM_ACCOUNT));
+    //   }
+    //
+    //   console.log(error);
+    // }
     setIsLoading(false);
   }
 

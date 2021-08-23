@@ -7,18 +7,18 @@
 import { createSlice, Slice } from '@reduxjs/toolkit';
 
 import {
-  AUTHENTICATION_SIGN_IN,
-  AUTHENTICATION_SIGN_UP,
-  AUTHENTICATION_SIGN_OUT,
-  AUTHENTICATION_RESEND_CODE,
-  AUTHENTICATION_SET_USERNAME,
+  // AUTHENTICATION_SIGN_IN,
+  // AUTHENTICATION_SIGN_UP,
+  // AUTHENTICATION_SIGN_OUT,
+  // AUTHENTICATION_RESEND_CODE,
+  // AUTHENTICATION_SET_USERNAME,
   AUTHENTICATION_CHANGE_PASSWORD,
   AUTHENTICATION_FORGOT_PASSWORD,
   AUTHENTICATION_CONFIRM_PASSWORD,
-  AUTHENTICATION_CONFIRM_REGISTRATION,
+  // AUTHENTICATION_CONFIRM_REGISTRATION,
   // AUTHENTICATION_ERROR,
-  NAVIGATION_AUTHENTICATION_SWITCH_FORM,
-  NAVIGATION_AUTHENTICATION_CONFIRM_ACCOUNT,
+  // NAVIGATION_AUTHENTICATION_SWITCH_FORM,
+  // NAVIGATION_AUTHENTICATION_CONFIRM_ACCOUNT,
 } from 'lib/types';
 import Authentication from 'lib/authentication';
 import type { AppThunk } from '../store';
@@ -37,6 +37,28 @@ const initialState: AuthState = {
   username: null,
   credentials: null,
 };
+
+export const authSlice: Slice = createSlice({
+  name: reducerName,
+  initialState,
+  reducers: {
+    setUsername: (state, action) => {
+      state.username = action.payload;
+    },
+    signUp: (state, action) => {
+      state.username = action.payload;
+    },
+    signIn: (state, action) => {
+      state.credentials = action.payload;
+    },
+    signOut: (state) => {
+      // eslint-disable-next-line
+      state = initialState;
+    },
+  },
+});
+
+export const { setUsername, signUp, signIn, signOut } = authSlice.actions;
 
 /**
  * This function is helper to reduce redundant code that calls authentication functions.
@@ -69,104 +91,104 @@ async function authHelper(
 
   return undefined;
 }
-
-/**
- * Signs up and dispatch sign up action to the authentication reducer.
- * @async
- * @param {string} username
- * @param {string} email
- * @param {string} password
- * @returns {(string|undefined)} Returns error message if fails on async function call.
- */
-export const signUp =
-  (username: string, email: string, password: string): AppThunk =>
-  async (dispatch) => {
-    const attributes = [
-      {
-        Name: 'email',
-        Value: email,
-      },
-    ];
-    const error = await authHelper(dispatch, AUTHENTICATION_SIGN_UP, auth.signUp, [
-      username,
-      password,
-      attributes,
-    ]);
-    /* if sign up succeed, dispatch other actions */
-    if (!error) {
-      dispatch({
-        type: NAVIGATION_AUTHENTICATION_SWITCH_FORM,
-        payload: NAVIGATION_AUTHENTICATION_CONFIRM_ACCOUNT,
-      });
-    }
-    return error;
-  };
-
-/**
- * Sign in and dispatch sign in action to the authentication reducer.
- * @async
- * @param {string} username
- * @param {string} password
- * @returns {(string|undefined)} Returns error message if fails on async function call.
- */
-export const signIn =
-  (username: string, password: string): AppThunk =>
-  async (dispatch) => {
-    const authData = await authHelper(dispatch, AUTHENTICATION_SIGN_IN, auth.signIn.bind(auth), [
-      username,
-      password,
-    ]);
-
-    return authData;
-  };
-
-/**
- * Confirm registration and dispatch registration confirmation action to the authentication reducer.
- * @async
- * @param {string} username
- * @param {string} code
- * @returns {(string|undefined)} Returns error message if fails on async function call.
- */
-export const confirmRegistration =
-  (username: string, code: any): AppThunk =>
-  async (dispatch) => {
-    const authData = await authHelper(
-      dispatch,
-      AUTHENTICATION_CONFIRM_REGISTRATION,
-      auth.confirmRegistration,
-      [username, code]
-    );
-
-    return authData;
-  };
-
-/**
- * Dispatch resend email confirmation action to the authentication reducer.
- * @async
- * @param {string} username
- * @returns {(string|undefined)} Returns error message if fails on async function call.
- */
-export const resendConfirmation =
-  (username: string): AppThunk =>
-  async (dispatch) => {
-    const authData = await authHelper(
-      dispatch,
-      AUTHENTICATION_RESEND_CODE,
-      auth.resendConfirmation,
-      [username]
-    );
-
-    return authData;
-  };
-
-/**
- * Dispatch the change password action to the authentication reducer.
- * @async
- * @param {string} username
- * @param {string} oldPassword
- * @param {string} newPassword
- * @returns {(string|undefined)} Returns error message if fails on async function call.
- */
+//
+// /**
+//  * Signs up and dispatch sign up action to the authentication reducer.
+//  * @async
+//  * @param {string} username
+//  * @param {string} email
+//  * @param {string} password
+//  * @returns {(string|undefined)} Returns error message if fails on async function call.
+//  */
+// export const signUp =
+//   (username: string, email: string, password: string): AppThunk =>
+//   async (dispatch) => {
+//     const attributes = [
+//       {
+//         Name: 'email',
+//         Value: email,
+//       },
+//     ];
+//     const error = await authHelper(dispatch, AUTHENTICATION_SIGN_UP, auth.signUp, [
+//       username,
+//       password,
+//       attributes,
+//     ]);
+//     /* if sign up succeed, dispatch other actions */
+//     if (!error) {
+//       dispatch({
+//         type: NAVIGATION_AUTHENTICATION_SWITCH_FORM,
+//         payload: NAVIGATION_AUTHENTICATION_CONFIRM_ACCOUNT,
+//       });
+//     }
+//     return error;
+//   };
+//
+// /**
+//  * Sign in and dispatch sign in action to the authentication reducer.
+//  * @async
+//  * @param {string} username
+//  * @param {string} password
+//  * @returns {(string|undefined)} Returns error message if fails on async function call.
+//  */
+// export const signIn =
+//   (username: string, password: string): AppThunk =>
+//   async (dispatch) => {
+//     const authData = await authHelper(dispatch, AUTHENTICATION_SIGN_IN, auth.signIn.bind(auth), [
+//       username,
+//       password,
+//     ]);
+//
+//     return authData;
+//   };
+//
+// /**
+//  * Confirm registration and dispatch registration confirmation action to the authentication reducer.
+//  * @async
+//  * @param {string} username
+//  * @param {string} code
+//  * @returns {(string|undefined)} Returns error message if fails on async function call.
+//  */
+// export const confirmRegistration =
+//   (username: string, code: any): AppThunk =>
+//   async (dispatch) => {
+//     const authData = await authHelper(
+//       dispatch,
+//       AUTHENTICATION_CONFIRM_REGISTRATION,
+//       auth.confirmRegistration,
+//       [username, code]
+//     );
+//
+//     return authData;
+//   };
+//
+// /**
+//  * Dispatch resend email confirmation action to the authentication reducer.
+//  * @async
+//  * @param {string} username
+//  * @returns {(string|undefined)} Returns error message if fails on async function call.
+//  */
+// export const resendConfirmation =
+//   (username: string): AppThunk =>
+//   async (dispatch) => {
+//     const authData = await authHelper(
+//       dispatch,
+//       AUTHENTICATION_RESEND_CODE,
+//       auth.resendConfirmation,
+//       [username]
+//     );
+//
+//     return authData;
+//   };
+//
+// /**
+//  * Dispatch the change password action to the authentication reducer.
+//  * @async
+//  * @param {string} username
+//  * @param {string} oldPassword
+//  * @param {string} newPassword
+//  * @returns {(string|undefined)} Returns error message if fails on async function call.
+//  */
 export const changePassword =
   (username: string, oldPassword: string, newPassword: string): AppThunk =>
   async (dispatch) => {
@@ -225,43 +247,24 @@ export const confirmPassword =
  * @async
  * @returns {(string|undefined)} Returns error message if fails on async function call.
  */
-export const signOut = (): AppThunk => async (dispatch) => {
-  const authData = await authHelper(dispatch, AUTHENTICATION_SIGN_OUT, auth.signOut, []);
-
-  return authData;
-};
-
-/**
- * Dispatch the set-username action to the authentication reducer.
- * @param {string} username
- */
-export const setUsername =
-  (username: string): AppThunk =>
-  (dispatch) => {
-    dispatch({
-      type: AUTHENTICATION_SET_USERNAME,
-      payload: username,
-    });
-  };
-
-export const authSlice: Slice = createSlice({
-  name: reducerName,
-  initialState,
-  reducers: {
-    AUTHENTICATION_SET_USERNAME: (state, action) => {
-      state.username = action.payload;
-    },
-    AUTHENTICATION_SIGN_UP: (state, action) => {
-      state.username = action.payload;
-    },
-    AUTHENTICATION_SIGN_IN: (state, action) => {
-      state.credentials = action.payload;
-    },
-    AUTHENTICATION_SIGN_OUT: (state) => {
-      // eslint-disable-next-line
-      state = initialState;
-    },
-  },
-});
+// export const signOut = (): AppThunk => async (dispatch) => {
+//   const authData = await authHelper(dispatch, AUTHENTICATION_SIGN_OUT, auth.signOut, []);
+//
+//   return authData;
+// };
+//
+// /**
+//  * Dispatch the set-username action to the authentication reducer.
+//  * @param {string} username
+//  */
+// export const setUsername =
+//   (username: string): AppThunk =>
+//   (dispatch) => {
+//     console.log('hola ', username);
+//     dispatch({
+//       type: AUTHENTICATION_SET_USERNAME,
+//       payload: username,
+//     });
+//   };
 
 export default authSlice.reducer;

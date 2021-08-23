@@ -18,7 +18,7 @@ const persistedReducer = persistCombineReducers(
   {
     key: 'auth',
     storage,
-    whitelist: ['key'],
+    whitelist: ['auth'],
     debug: true,
   },
   { global: globalSlice, auth: authReducer }
