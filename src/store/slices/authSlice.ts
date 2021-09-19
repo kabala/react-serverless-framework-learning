@@ -21,7 +21,7 @@ import {
   // NAVIGATION_AUTHENTICATION_CONFIRM_ACCOUNT,
 } from 'lib/types';
 import Authentication from 'lib/authentication';
-import type { AppThunk } from '../store';
+import type { AppThunk, RootState } from '../store';
 
 /* Create constant authentication instance */
 const auth = new Authentication();
@@ -59,6 +59,8 @@ export const authSlice: Slice = createSlice({
 });
 
 export const { setUsername, signUp, signIn, signOut } = authSlice.actions;
+export const isUserLoggedIn = (state: RootState) => state.auth?.credentials;
+// TODO: ADD this to complete user validation  ===> && state.auth?.username;
 
 /**
  * This function is helper to reduce redundant code that calls authentication functions.
@@ -78,9 +80,6 @@ async function authHelper(
 ): Promise<string | undefined> {
   try {
     const result = await authFunc(...authParams);
-
-    console.log({ result });
-
     dispatch({
       type: actionType,
       payload: result,

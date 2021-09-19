@@ -7,17 +7,18 @@
 
 /* external imports */
 import React, { useState } from 'react';
+import { Link } from 'wouter';
 import { Form, Input, Button } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 /* local imports */
 import { setUsername } from 'store/slices/authSlice';
-import { switchAuthenticationForm } from 'store/slices/globalSlice';
+// import { switchAuthenticationForm } from 'store/slices/globalSlice';
 import { useAppDispatch } from 'store/hooks';
-import {
-  NAVIGATION_AUTHENTICATION_SIGN_UP,
-  NAVIGATION_AUTHENTICATION_FORGOT_PASSWORD,
-  // NAVIGATION_AUTHENTICATION_CONFIRM_ACCOUNT,
-} from 'lib/types';
+// import {
+//   NAVIGATION_AUTHENTICATION_SIGN_UP,
+//   NAVIGATION_AUTHENTICATION_FORGOT_PASSWORD,
+//   // NAVIGATION_AUTHENTICATION_CONFIRM_ACCOUNT,
+// } from 'lib/types';
 
 interface SignInFormFields {
   userName: string;
@@ -34,7 +35,6 @@ export default function SignIn() {
    */
   async function handleSubmit({ userName }: SignInFormFields): Promise<void> {
     setIsLoading(true);
-    console.log('hi');
     dispatch(setUsername(userName));
     // try {
     //   await dispatch(signIn(userName, password));
@@ -67,14 +67,7 @@ export default function SignIn() {
       </Form.Item>
       <Form.Item>
         {/* render the forgot password link. clicking will switch to the forgot password form. */}
-        <a
-          href="#/"
-          onClick={() => {
-            dispatch(switchAuthenticationForm(NAVIGATION_AUTHENTICATION_FORGOT_PASSWORD));
-          }}
-        >
-          Forgot Password
-        </a>
+        <Link href="/">Forgot Password</Link>
       </Form.Item>
       <Form.Item>
         {/* render sign in button, when clicked, an attempt to sing in will executed */}
@@ -83,14 +76,7 @@ export default function SignIn() {
         </Button>
         <hr />
         {/* Render switch to sign up link */}
-        <a
-          href="#/"
-          onClick={() => {
-            dispatch(switchAuthenticationForm(NAVIGATION_AUTHENTICATION_SIGN_UP));
-          }}
-        >
-          Create Account
-        </a>
+        <Link href="/">Create Account</Link>
       </Form.Item>
     </Form>
   );
