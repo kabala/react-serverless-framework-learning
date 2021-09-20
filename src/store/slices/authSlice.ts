@@ -77,17 +77,16 @@ async function authHelper(
   actionType: string,
   authFunc: any,
   authParams: any
-): Promise<string | undefined> {
+): Promise<string | undefined | unknown> {
   try {
     const result = await authFunc(...authParams);
     dispatch({
       type: actionType,
       payload: result,
     });
-  } catch (e) {
-    return e.message;
+  } catch (e: unknown) {
+    return e;
   }
-
   return undefined;
 }
 //

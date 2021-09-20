@@ -5,7 +5,7 @@
  * @license Attribution-NonCommercial-NoDerivatives 4.0 International
  */
 /* external imports */
-import React from 'react';
+import React, { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import { Form, Input, Button } from 'antd';
 import { CheckOutlined, ClockCircleOutlined } from '@ant-design/icons';
@@ -32,7 +32,7 @@ export default function ConfirmAccount() {
    * Confirm user registration when button is clicked.
    *  @async
    */
-  async function resendConfirmationCode() {
+  const resendConfirmationCode = useCallback(() => {
     /* send confirmation code and wait for result(error if return a string) */
     // const error = await dispatch(resendConfirmation(username));
     // /* confirmation code message */
@@ -43,13 +43,13 @@ export default function ConfirmAccount() {
     //     errors: [new Error(error || msg)],
     //   },
     // });
-  }
+  }, []);
 
   /**
    * Confirm user registration when button is clicked.
    *  @async
    */
-  async function confirmRegistrationCode(formData: any) {
+  const confirmRegistrationCode = useCallback((formData: any) => {
     console.log(formData);
 
     // form.validateFields(async (err: any, values: any) => {
@@ -72,7 +72,7 @@ export default function ConfirmAccount() {
     //     }
     //   }
     // });
-  }
+  }, []);
 
   return (
     <Form onFinish={confirmRegistrationCode}>

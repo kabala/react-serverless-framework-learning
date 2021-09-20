@@ -139,7 +139,7 @@ export default class Authentication {
      * @param {String} password
 
      */
-  async signIn(username: string, password: string): Promise<Error | CognitoIdentityCredentials> {
+  async signIn(username: string, password: string): Promise<unknown | CognitoIdentityCredentials> {
     /* try to login if cached user first */
 
     try {
@@ -155,8 +155,8 @@ export default class Authentication {
       const authCredentials = await this.authCognitoUser(username, password);
       console.log(authCredentials);
       return authCredentials;
-    } catch (e) {
-      return e;
+    } catch (error: unknown) {
+      return error;
     }
   }
 

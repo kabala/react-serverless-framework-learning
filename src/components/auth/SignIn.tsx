@@ -6,7 +6,7 @@
  */
 
 /* external imports */
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { Link } from 'wouter';
 import { Form, Input, Button } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
@@ -33,7 +33,8 @@ export default function SignIn() {
    * Handles the sign in submission
    * @param  {SignInFormFields} form fields
    */
-  async function handleSubmit({ userName }: SignInFormFields): Promise<void> {
+
+  const handleSubmit = useCallback(async ({ userName }: SignInFormFields): Promise<void> => {
     setIsLoading(true);
     dispatch(setUsername(userName));
     // try {
@@ -47,7 +48,7 @@ export default function SignIn() {
     //   console.log(error);
     // }
     setIsLoading(false);
-  }
+  }, []);
 
   return (
     <Form onFinish={handleSubmit}>

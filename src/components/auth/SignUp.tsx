@@ -5,7 +5,7 @@
  * @license Attribution-NonCommercial-NoDerivatives 4.0 International
  */
 /* external imports */
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { Form, Input, Button } from 'antd';
 import { LockOutlined, MailOutlined, UserOutlined } from '@ant-design/icons';
 
@@ -36,14 +36,14 @@ export default function SignUp() {
    * state.
    * @param  {Event} e
    */
-  function handleConfirmBlur(e: any) {
+  const handleConfirmBlur = useCallback((e: any) => {
     console.log(e);
 
     // get the value from the target of the blur event, i.e. the input textbox
     // const { value } = e.target;
     // /* set the state of the component to dirty if is already dirty or value is not empty */
     // this.setState({ confirmDirty: this.state.confirmDirty || !!value });
-  }
+  }, []);
 
   /**
    * Matches password with confirm password input field.
@@ -81,7 +81,7 @@ export default function SignUp() {
    * Handles the sign up submission
    * @param  {Event} e
    */
-  async function handleSubmit({ userName, email, password }: SignUpFormFields) {
+  const handleSubmit = useCallback(async ({ userName, email, password }: SignUpFormFields) => {
     setIsLoading(true);
 
     try {
@@ -91,7 +91,7 @@ export default function SignUp() {
     }
 
     setIsLoading(false);
-  }
+  }, []);
 
   return (
     <Form onFinish={handleSubmit}>
