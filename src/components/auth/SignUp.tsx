@@ -5,7 +5,7 @@
  * @license Attribution-NonCommercial-NoDerivatives 4.0 International
  */
 /* external imports */
-import React, { useState, useCallback } from 'react';
+import React, { useCallback } from 'react';
 import { Form, Input, Button } from 'antd';
 import { Link } from 'wouter';
 import { LockOutlined, MailOutlined, UserOutlined } from '@ant-design/icons';
@@ -21,8 +21,6 @@ interface SignUpFormFields {
 }
 
 export default function SignUp() {
-  const [isLoading, setIsLoading] = useState(false);
-  // const [confirmDirty, setConfirmDirty] = useState(false);
   const dispatch = useAppDispatch();
 
   /**
@@ -30,29 +28,35 @@ export default function SignUp() {
    * @param  {Event} e
    */
   const handleSubmit = useCallback(async ({ username, email, password }: SignUpFormFields) => {
-    setIsLoading(true);
-
     await dispatch(signUp({ username, email, password }));
-
-    setIsLoading(false);
   }, []);
 
   return (
-    <Form onFinish={handleSubmit}>
+    <Form onFinish={handleSubmit} autoComplete="off">
       <Form.Item
         name="username"
         rules={[{ required: true, message: 'Please input your username!' }]}
       >
-        <Input prefix={<UserOutlined />} placeholder="Username" />
+        <Input
+          prefix={<UserOutlined />}
+          placeholder="Username"
+          autoComplete="off"
+          list="autocompleteOff"
+        />
       </Form.Item>
       <Form.Item name="email" rules={[{ required: true, message: 'Please input your email!' }]}>
-        <Input type="email" prefix={<MailOutlined />} placeholder="Email" />
+        <Input type="email" prefix={<MailOutlined />} placeholder="Email" autoComplete="off" />
       </Form.Item>
       <Form.Item
         name="password"
         rules={[{ required: true, message: 'Please input your Password!' }]}
       >
-        <Input prefix={<LockOutlined />} type="password" placeholder="Password" />
+        <Input
+          prefix={<LockOutlined />}
+          type="password"
+          placeholder="Password"
+          autoComplete="off"
+        />
       </Form.Item>
       <Form.Item
         name="confirmPassword"
@@ -80,7 +84,7 @@ export default function SignUp() {
         />
       </Form.Item>
       <Form.Item>
-        <Button type="primary" htmlType="submit" className="login-form-button" loading={isLoading}>
+        <Button type="primary" htmlType="submit" className="login-form-button">
           Sign Up
         </Button>
         <hr />

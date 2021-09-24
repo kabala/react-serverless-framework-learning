@@ -6,7 +6,7 @@
  */
 
 /* external imports */
-import React, { useState, useCallback } from 'react';
+import React, { useCallback } from 'react';
 import { Link } from 'wouter';
 import { Form, Input, Button } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
@@ -20,7 +20,6 @@ interface SignInFormFields {
 }
 
 export default function SignIn() {
-  const [isLoading, setIsLoading] = useState(false);
   const dispatch = useAppDispatch();
 
   /**
@@ -29,9 +28,7 @@ export default function SignIn() {
    */
   const handleSubmit = useCallback(
     async ({ username, password }: SignInFormFields): Promise<void> => {
-      setIsLoading(true);
       dispatch(signIn({ username, password }));
-      setIsLoading(false);
     },
     []
   );
@@ -58,7 +55,7 @@ export default function SignIn() {
       </Form.Item>
       <Form.Item>
         {/* render sign in button, when clicked, an attempt to sing in will executed */}
-        <Button type="primary" htmlType="submit" className="login-form-button" loading={isLoading}>
+        <Button type="primary" htmlType="submit" className="login-form-button">
           Sign In
         </Button>
         <hr />
