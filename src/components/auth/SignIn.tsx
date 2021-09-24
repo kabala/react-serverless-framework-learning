@@ -12,13 +12,7 @@ import { Form, Input, Button } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 /* local imports */
 import { signIn } from 'store/slices/authSlice';
-// import { switchAuthenticationForm } from 'store/slices/globalSlice';
 import { useAppDispatch } from 'store/hooks';
-// import {
-//   NAVIGATION_AUTHENTICATION_SIGN_UP,
-//   NAVIGATION_AUTHENTICATION_FORGOT_PASSWORD,
-//   // NAVIGATION_AUTHENTICATION_CONFIRM_ACCOUNT,
-// } from 'lib/types';
 
 interface SignInFormFields {
   username: string;
@@ -33,21 +27,10 @@ export default function SignIn() {
    * Handles the sign in submission
    * @param  {SignInFormFields} form fields
    */
-
   const handleSubmit = useCallback(
     async ({ username, password }: SignInFormFields): Promise<void> => {
       setIsLoading(true);
       dispatch(signIn({ username, password }));
-      // try {
-      //   await dispatch(signIn(username, password));
-      // } catch (error) {
-      //   if (error.includes('not confirmed')) {
-      //     dispatch(setUsername(username));
-      //     dispatch(switchAuthenticationForm(NAVIGATION_AUTHENTICATION_CONFIRM_ACCOUNT));
-      //   }
-      //
-      //   console.log(error);
-      // }
       setIsLoading(false);
     },
     []
@@ -80,7 +63,7 @@ export default function SignIn() {
         </Button>
         <hr />
         {/* Render switch to sign up link */}
-        <Link href="/">Create Account</Link>
+        <Link to="/signup">Create Account</Link>
       </Form.Item>
     </Form>
   );

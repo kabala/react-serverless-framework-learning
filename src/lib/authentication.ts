@@ -116,7 +116,7 @@ export default class Authentication {
    * @param {string[]} attributes
    * @returns {Promise} promise resolving the username.
    */
-  signUp = (username: string, password: string, attributes: []) =>
+  signUp = (username: string, password: string, attributes: { Name: string; Value: string }[]) =>
     new Promise((resolve, reject) => {
       /* convert all attributes to cognito attributes */
       const cognitoAttributes = attributes.map(
