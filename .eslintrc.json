@@ -1,5 +1,10 @@
 {
-  "extends": ["airbnb-typescript", "prettier", "plugin:import/recommended", "plugin:import/typescript"],
+  "extends": [
+    "airbnb-typescript",
+    "prettier",
+    "plugin:import/recommended",
+    "plugin:import/typescript"
+  ],
   "plugins": ["prettier"],
   "parserOptions": {
     "project": ["tsconfig.json"]
@@ -7,16 +12,12 @@
   "settings": {
     "import/resolver": {
       "node": {
-        "paths": [
-          "src"
-        ]
+        "paths": ["src"]
       }
     }
   },
   "rules": {
-    "prettier/prettier": [
-      "error"
-    ],
+    "prettier/prettier": ["error"],
     "no-param-reassign": ["error", { "props": true, "ignorePropertyModificationsFor": ["state"] }]
   }
 }

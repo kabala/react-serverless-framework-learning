@@ -4,7 +4,7 @@
  * @author Carlos Santín
  * @license Attribution-NonCommercial-NoDerivatives 4.0 International
  */
-import { createSlice, Slice } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice, Slice } from '@reduxjs/toolkit';
 
 import {
   // AUTHENTICATION_SIGN_IN,
@@ -31,12 +31,27 @@ const reducerName = 'auth';
 interface AuthState {
   username: string | null;
   credentials: string | null;
+  error: unknown | string;
 }
 
 const initialState: AuthState = {
   username: null,
   credentials: null,
+  error: null,
 };
+
+export const signIn = createAsyncThunk(
+  `${reducerName}/signIn`,
+  async ({ username, password }: any) => {
+    try {
+      const response = await auth.signIn(username, password);
+      console.log({ response });
+      return 'a';
+    } catch (e) {
+      return e.message;
+    }
+  }
+);
 
 export const authSlice: Slice = createSlice({
   name: reducerName,
@@ -48,17 +63,22 @@ export const authSlice: Slice = createSlice({
     signUp: (state, action) => {
       state.username = action.payload;
     },
-    signIn: (state, action) => {
-      state.credentials = action.payload;
-    },
     signOut: (state) => {
       // eslint-disable-next-line
       state = initialState;
     },
   },
+  extraReducers: (builder) => {
+    builder.addCase(signIn.fulfilled, (state, action) => {
+      state.credentials = action.payload;
+    });
+    builder.addCase(signIn.rejected, (state, action) => {
+      state.error = action.payload;
+    });
+  },
 });
 
-export const { setUsername, signUp, signIn, signOut } = authSlice.actions;
+export const { setUsername, signUp, signOut } = authSlice.actions;
 export const isUserLoggedIn = (state: RootState) => state.auth?.credentials;
 // TODO: ADD this to complete user validation  ===> && state.auth?.username;
 

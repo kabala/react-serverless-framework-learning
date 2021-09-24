@@ -11,7 +11,7 @@ import { Link } from 'wouter';
 import { Form, Input, Button } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 /* local imports */
-import { setUsername } from 'store/slices/authSlice';
+import { signIn } from 'store/slices/authSlice';
 // import { switchAuthenticationForm } from 'store/slices/globalSlice';
 import { useAppDispatch } from 'store/hooks';
 // import {
@@ -21,7 +21,7 @@ import { useAppDispatch } from 'store/hooks';
 // } from 'lib/types';
 
 interface SignInFormFields {
-  userName: string;
+  username: string;
   password: string;
 }
 
@@ -34,26 +34,29 @@ export default function SignIn() {
    * @param  {SignInFormFields} form fields
    */
 
-  const handleSubmit = useCallback(async ({ userName }: SignInFormFields): Promise<void> => {
-    setIsLoading(true);
-    dispatch(setUsername(userName));
-    // try {
-    //   await dispatch(signIn(userName, password));
-    // } catch (error) {
-    //   if (error.includes('not confirmed')) {
-    //     dispatch(setUsername(userName));
-    //     dispatch(switchAuthenticationForm(NAVIGATION_AUTHENTICATION_CONFIRM_ACCOUNT));
-    //   }
-    //
-    //   console.log(error);
-    // }
-    setIsLoading(false);
-  }, []);
+  const handleSubmit = useCallback(
+    async ({ username, password }: SignInFormFields): Promise<void> => {
+      setIsLoading(true);
+      dispatch(signIn({ username, password }));
+      // try {
+      //   await dispatch(signIn(username, password));
+      // } catch (error) {
+      //   if (error.includes('not confirmed')) {
+      //     dispatch(setUsername(username));
+      //     dispatch(switchAuthenticationForm(NAVIGATION_AUTHENTICATION_CONFIRM_ACCOUNT));
+      //   }
+      //
+      //   console.log(error);
+      // }
+      setIsLoading(false);
+    },
+    []
+  );
 
   return (
     <Form onFinish={handleSubmit}>
       <Form.Item
-        name="userName"
+        name="username"
         label="User"
         rules={[{ required: true, message: 'Insert your username.' }]}
       >

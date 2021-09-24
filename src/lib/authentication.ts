@@ -149,14 +149,13 @@ export default class Authentication {
         return credentials;
       }
       if (!username || !password) {
-        throw new Error('No user cached and no credentials provided');
+        throw Error('No user cached and no credentials provided');
       }
 
       const authCredentials = await this.authCognitoUser(username, password);
-      console.log(authCredentials);
       return authCredentials;
-    } catch (error: unknown) {
-      return error;
+    } catch (error: any) {
+      throw Error(error.message);
     }
   }
 
